@@ -21,7 +21,7 @@ interface AppServiceI {
         onSubjectSend: OnSubjectSend;
     }
 }
-interface MessageEventListener {
+export interface MessageEventListener {
     listener: any;
     id: number;
 }

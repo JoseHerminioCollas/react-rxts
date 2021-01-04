@@ -1,6 +1,6 @@
-import { Message } from './app-service'
+import { Message, MessageEventListener } from './app-service'
 
-const sendToSubjects = (subjects: [], message: Message) => {
+const sendToSubjects = (subjects: MessageEventListener[], message: Message) => {
     subjects
         .filter((e: any) => e.id !== message.id)
         .forEach((element: any) => {
