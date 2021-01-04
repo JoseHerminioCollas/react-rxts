@@ -1,4 +1,4 @@
-import { Subject, timer, zip } from 'rxjs'
+import { Observable, Subject, Subscription, timer, zip } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 export interface Message {
@@ -28,8 +28,8 @@ const AppService: AppServiceI = () => {
     const messageEventListeners: MessageEventListener[] = []
     const sendToSubjects = (message: Message) => {
         messageEventListeners
-            .filter((e: any) => e.id !== message.id)
-            .forEach((element: any) => {
+            .filter((e: MessageEventListener) => e.id !== message.id)
+            .forEach((element: MessageEventListener) => {
                 element.listener.next(message.message)
             });
     }
