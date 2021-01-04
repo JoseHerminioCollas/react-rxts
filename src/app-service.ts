@@ -14,14 +14,14 @@ interface AddMessage {
 interface OnSubjectSend {
     (listener: (subjects: [], message: Message) => void): void;
 }
-interface AppService {
+interface AppServiceI {
     (): {
         addMessageEventListener: AddMessageEventListener;
         addMessage: AddMessage;
         onSubjectSend: OnSubjectSend;
     }
 }
-const AppService: AppService = () => {
+const AppService: AppServiceI = () => {
     let messageListener: any
     const messages$: Subject<Message> = new Subject()
     const timer$ = timer(0, 3000)
