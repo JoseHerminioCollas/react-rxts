@@ -1,31 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
 import A from './components/A'
-import AppService from './app-service'
-
-const sendToSubjects = (subjects: [], message: any) => {
-  subjects
-      .filter((e: any, i: number) => i !== message.id)
-      .forEach((element: any) => {
-          element.next(message.message)
-      });
-}
-const appService = AppService()
+import AppService, { Message } from './app-service'
+import sendToSubjects from './send-to-subjects'
 
 function App() {  
+  const appService = AppService()
   const id: number = 0
   const idB: number = 1
-  const [ message, setMessage ] = useState('')
-  // console.log(setMessage)
   useEffect( () => {
-    appService.addMessageEventListener((message: any) => {
+    appService.addMessageEventListener((message: string) => {
       console.log("msgA", message)
     }, id)
-    appService.addMessageEventListener((message: any) => {
+    appService.addMessageEventListener((message: string) => {
       console.log("msgB", message)
     }, idB)
-    // on message send
-    appService.onSubjectSend((subjects: any, message: any) => {
+    appService.onSubjectSend((subjects: [], message: Message) => {
       sendToSubjects(subjects, message)
       console.log(subjects, message.message)
     })
@@ -39,7 +29,7 @@ function App() {
   return (
     <div className="App">
         RXJS Messages :
-        {message}
+        {/* {message} */}
         <A 
           appService={appService}
           id={10}

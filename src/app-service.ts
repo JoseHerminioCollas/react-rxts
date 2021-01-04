@@ -1,18 +1,24 @@
 import { Subject, timer, zip } from 'rxjs'
 import { map } from 'rxjs/operators'
 
-interface Message {
+export interface Message {
     message: string;
     id: number | null;
 }
 interface AddMessageEventListener {
-    (listener: any, id: number) : void;
+    (listener: (message: string) => void, id: number) : void;
+}
+interface AddMessage {
+    (message: string, id: number | null) : void;
+}
+interface OnSubjectSend {
+    (listener: (subjects: [], message: Message) => void): void;
 }
 interface AppService {
     (): {
         addMessageEventListener: AddMessageEventListener;
-        addMessage: (Message: string, id: number | null) => void;
-        onSubjectSend: (listener: any) => void;
+        addMessage: AddMessage;
+        onSubjectSend: OnSubjectSend;
     }
 }
 const AppService: AppService = () => {
@@ -25,7 +31,7 @@ const AppService: AppService = () => {
         .subscribe((value: any) => {
             messageListener(messageSubjects, value)
         })
-    const addMessage = (message = "", id: (number | null)) => {
+    const addMessage: AddMessage = (message = "", id: (number | null)) => {
         messages$.next({message, id})
     }
     const addMessageEventListener: AddMessageEventListener = (listener, id) => {
@@ -34,7 +40,7 @@ const AppService: AppService = () => {
             .asObservable()
             .subscribe(listener)
     }
-    const onSubjectSend = (listener: any) => {
+    const onSubjectSend: OnSubjectSend = (listener: any) => {
         messageListener = listener
     } 
     return {
