@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
 import './App.css';
 import A from './components/A'
-import AppService, { Message } from './app-service'
-import sendToSubjects from './send-to-subjects'
+import AppService from './app-service'
 
 function App() {  
   const appService = AppService()
@@ -15,9 +14,6 @@ function App() {
     appService.addMessageEventListener((message: string) => {
       console.log("msgB", message)
     }, idB)
-    appService.onSubjectSend((subjects: [], message: Message) => {
-      sendToSubjects(subjects, message)
-    })
     appService.addMessage("A", id)
     appService.addMessage("B", idB)
   })

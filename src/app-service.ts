@@ -1,4 +1,4 @@
-import { Subject, Subscriber, timer, zip } from 'rxjs'
+import { Subject, timer, zip } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 export interface Message {
@@ -11,29 +11,32 @@ interface AddMessageEventListener {
 interface AddMessage {
     (message: string, id: number | null): void;
 }
-interface OnSubjectSend {
-    (listener: (subjects: [], message: Message) => void): void;
-}
 interface AppServiceI {
     (): {
         addMessageEventListener: AddMessageEventListener;
         addMessage: AddMessage;
-        onSubjectSend: OnSubjectSend;
     }
 }
 export interface MessageEventListener {
     listener: any;
     id: number;
 }
+
 const AppService: AppServiceI = () => {
-    let messageListener: any
     const messages$: Subject<Message> = new Subject()
     const timer$ = timer(0, 3000)
     const messageEventListeners: MessageEventListener[] = []
+    const sendToSubjects = (message: Message) => {
+        messageEventListeners
+            .filter((e: any) => e.id !== message.id)
+            .forEach((element: any) => {
+                element.listener.next(message.message)
+            });
+    }
     zip(messages$, timer$).pipe(
         map(([message]) => message))
         .subscribe((message: Message) => {
-            messageListener(messageEventListeners, message)
+            sendToSubjects(message)
         })
     const addMessage: AddMessage = (message, id) => {
         messages$.next({ message, id })
@@ -49,13 +52,9 @@ const AppService: AppServiceI = () => {
         }
         messageEventListeners.push(mEL)
     }
-    const onSubjectSend: OnSubjectSend = (listener) => {
-        messageListener = listener
-    }
     return {
         addMessageEventListener,
         addMessage,
-        onSubjectSend,
     }
 }
 
