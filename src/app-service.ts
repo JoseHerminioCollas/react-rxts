@@ -1,4 +1,4 @@
-import { Subject, timer, zip } from 'rxjs'
+import { Subject, Subscriber, timer, zip } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 export interface Message {
@@ -6,10 +6,10 @@ export interface Message {
     id: number | null;
 }
 interface AddMessageEventListener {
-    (listener: (message: string) => void, id: number) : void;
+    (listener: (message: string) => void, id: number): void;
 }
 interface AddMessage {
-    (message: string, id: number | null) : void;
+    (message: string, id: number | null): void;
 }
 interface OnSubjectSend {
     (listener: (subjects: [], message: Message) => void): void;
@@ -21,28 +21,37 @@ interface AppServiceI {
         onSubjectSend: OnSubjectSend;
     }
 }
+interface MessageEventListener {
+    listener: any;
+    id: number;
+}
 const AppService: AppServiceI = () => {
     let messageListener: any
     const messages$: Subject<Message> = new Subject()
     const timer$ = timer(0, 3000)
-    const messageSubjects: any = []
+    const messageEventListeners: MessageEventListener[] = []
     zip(messages$, timer$).pipe(
-        map(([value]) => value))
-        .subscribe((value: any) => {
-            messageListener(messageSubjects, value)
+        map(([message]) => message))
+        .subscribe((message: Message) => {
+            messageListener(messageEventListeners, message)
         })
-    const addMessage: AddMessage = (message = "", id: (number | null)) => {
-        messages$.next({message, id})
+    const addMessage: AddMessage = (message, id) => {
+        messages$.next({ message, id })
     }
     const addMessageEventListener: AddMessageEventListener = (listener, id) => {
-        messageSubjects[id] = new Subject()
-        messageSubjects[id]
-            .asObservable()
-            .subscribe(listener)
+        const mEL: MessageEventListener = {
+            listener: new Subject()
+                .asObservable()
+                .subscribe((e: any) => {
+                    listener(e)
+                }),
+            id
+        }
+        messageEventListeners.push(mEL)
     }
-    const onSubjectSend: OnSubjectSend = (listener: any) => {
+    const onSubjectSend: OnSubjectSend = (listener) => {
         messageListener = listener
-    } 
+    }
     return {
         addMessageEventListener,
         addMessage,

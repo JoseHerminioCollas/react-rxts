@@ -17,19 +17,14 @@ function App() {
     }, idB)
     appService.onSubjectSend((subjects: [], message: Message) => {
       sendToSubjects(subjects, message)
-      console.log(subjects, message.message)
     })
     appService.addMessage("A", id)
     appService.addMessage("B", idB)
-    appService.addMessage("C", idB)
-    appService.addMessage("D", idB)
-    appService.addMessage("E", idB)
   })
 
   return (
     <div className="App">
         RXJS Messages :
-        {/* {message} */}
         <A 
           appService={appService}
           id={10}

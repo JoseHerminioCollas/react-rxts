@@ -1,10 +1,10 @@
-import { send } from "process";
+import { Message } from './app-service'
 
-const sendToSubjects = (subjects: [], message: any) => {
+const sendToSubjects = (subjects: [], message: Message) => {
     subjects
-        .filter((e: any, i: number) => i !== message.id)
+        .filter((e: any) => e.id !== message.id)
         .forEach((element: any) => {
-            element.next(message.message)
+            element.listener.next(message.message)
         });
   }
 
