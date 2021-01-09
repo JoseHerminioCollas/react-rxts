@@ -14,7 +14,7 @@ function App() {
     appService.addMessageEventListener((message: string) => {
       console.log("msgB", message)
     }, idB)
-    appService.addMessage("A", id)
+    appService.addMessage("AAAA", id)
     appService.addMessage("B", idB)
   })
 
