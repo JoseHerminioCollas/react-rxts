@@ -1,19 +1,18 @@
 
-// addMessage callback
-
 const messages: string[] = []
 let h: any
 let isRunning = false
+let callBack: any
 const run = () => {
     if (isRunning) return
     h = setInterval(() => {
-        if (messages.length === 0) {
-            console.log('quit')
-            clearInterval(h)
-            isRunning = false
-        }
         const e = messages.pop()
-        console.log('zz', e)
+        if (!e) {
+            isRunning = false
+            clearInterval(h)
+        } else {
+            callBack(e)
+        }
     }, 1000)
 }
 const add = (message: string) => {
@@ -23,26 +22,25 @@ const add = (message: string) => {
     }
     messages.unshift(message)
 }
-// run()
-
-add('a')
-add('b')
-add('c')
-add('d')
-add('e')
+const timerEngine = (listener: any) => {
+    callBack = listener
+    return {add}
+}
+/////////////////
+const tE = timerEngine((e: string) => {
+    console.log('message:', e)
+})
+tE.add('a')
+tE.add('b')
+tE.add('c')
+tE.add('d')
 setTimeout(() => {
     console.log('add')
-    add('a')
-    add('b')
-    add('c')
-    add('d')
-    add('e')
-    // console.log('a')
-}, 10000)
-// messages.unshift('a')
-// messages.unshift('b')
-// messages.unshift('c')
-// messages.unshift('d')
-
+    tE.add('a')
+    tE.add('a')
+    tE.add('b')
+    tE.add('c')
+    tE.add('d')
+    }, 10000)
 
 export default h

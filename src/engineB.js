@@ -1,20 +1,21 @@
 "use strict";
-// addMessage callback
 exports.__esModule = true;
 var messages = [];
 var h;
 var isRunning = false;
+var callBack;
 var run = function () {
     if (isRunning)
         return;
     h = setInterval(function () {
-        if (messages.length === 0) {
-            console.log('quit');
-            clearInterval(h);
-            isRunning = false;
-        }
         var e = messages.pop();
-        console.log('zz', e);
+        if (!e) {
+            isRunning = false;
+            clearInterval(h);
+        }
+        else {
+            callBack(e);
+        }
     }, 1000);
 };
 var add = function (message) {
@@ -24,23 +25,24 @@ var add = function (message) {
     }
     messages.unshift(message);
 };
-// run()
-add('a');
-add('b');
-add('c');
-add('d');
-add('e');
+var timerEngine = function (listener) {
+    callBack = listener;
+    return { add: add };
+};
+/////////////////
+var tE = timerEngine(function (e) {
+    console.log('message:', e);
+});
+tE.add('a');
+tE.add('b');
+tE.add('c');
+tE.add('d');
 setTimeout(function () {
     console.log('add');
-    add('a');
-    add('b');
-    add('c');
-    add('d');
-    add('e');
-    // console.log('a')
+    tE.add('a');
+    tE.add('a');
+    tE.add('b');
+    tE.add('c');
+    tE.add('d');
 }, 10000);
-// messages.unshift('a')
-// messages.unshift('b')
-// messages.unshift('c')
-// messages.unshift('d')
 exports["default"] = h;
