@@ -1,28 +1,28 @@
 "use strict";
 exports.__esModule = true;
 var timerEngine = function (listener) {
-    var callBack = listener;
     var messages = [];
-    var h;
+    var intervalHandle;
     var isRunning = false;
     var run = function () {
         if (isRunning)
             return;
-        h = setInterval(function () {
+        isRunning = true;
+        intervalHandle = setInterval(function () {
             var e = messages.pop();
             if (!e) {
                 isRunning = false;
-                clearInterval(h);
+                clearInterval(intervalHandle);
             }
             else {
-                callBack(e);
+                listener(e);
             }
         }, 1000);
     };
     var add = function (message) {
         if (!isRunning) {
             run();
-            isRunning = true;
+            // isRunning = true
         }
         messages.unshift(message);
     };

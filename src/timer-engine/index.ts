@@ -1,29 +1,35 @@
 
-const timerEngine = (listener: any) => {
-    const callBack = listener
+interface TimerEngine {
+    (listener: any): TimerEngineInstance
+}
+interface TimerEngineInstance {
+    add: (message: string) => void
+}
+const timerEngine: TimerEngine = (listener) => {
     const messages: string[] = []
-    let h: any
-    let isRunning = false
+    let intervalHandle: any
+    let isRunning: boolean = false
+    const increment = 1000
     const run = () => {
         if (isRunning) return
-        h = setInterval(() => {
-            const e = messages.pop()
-            if (!e) {
+        isRunning = true
+        intervalHandle = setInterval(() => {
+            const message = messages.pop()
+            if (!message) {
                 isRunning = false
-                clearInterval(h)
+                clearInterval(intervalHandle)
             } else {
-                callBack(e)
+                listener(message)
             }
-        }, 1000)
+        }, increment)
     }
     const add = (message: string) => {
         if (!isRunning) {
             run()
-            isRunning = true
         }
         messages.unshift(message)
-    }    
-    return {add}
+    }
+    return { add }
 }
 
 export default timerEngine
