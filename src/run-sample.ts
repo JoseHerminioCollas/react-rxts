@@ -1,51 +1,61 @@
 import { BehaviorSubject, timer, asyncScheduler, from, NEVER, zip } from 'rxjs'
-import { observeOn, switchMap, map, takeWhile, } from "rxjs/operators";
+import { switchMap, takeWhile, timestamp } from "rxjs/operators";
+
+let timeStamp: number = Date.now()
 const K = 1000;
 const INTERVAL = K;
-const MINUTES = 25;
-const TIME = MINUTES * K * 60;
-// let current: number;
-let time = TIME;
-const currentInterval = () => time / INTERVAL;
-const toRemainingSeconds = (t: number) => currentInterval() - t;
-
+const a$ = new BehaviorSubject('a')
 const toggle$ = new BehaviorSubject(true);
 const remainingSeconds$ = toggle$.pipe(
   switchMap((running: boolean) => {
     return running ? timer(0, INTERVAL) : NEVER;
   }),
-  // map(toRemainingSeconds),
-  takeWhile((t: any) => t >= 0)
-)
-// remainingSeconds$.subscribe(e => console.log('xxx', e))
-
-const a$ = new BehaviorSubject('a')
+  takeWhile((t: any) => {
+    // console.log('t', Date.now())
+    // console.log('t', timeStamp)
+    // console.log('t')
+    if (Date.now() > timeStamp + 2000) {
+      console.log('quit')
+      toggle$.next(false)
+    }
+    return t >= 0
+  }
+  ))
+  remainingSeconds$.subscribe(e => console.log('e', e))
 zip(remainingSeconds$, a$)
-  // .pipe(takeWhile((t: any) => t < 3))
-  .subscribe(e => console.log('--', e),
+  .subscribe(e => {
+  // toggle$.next(true)
+  console.log('--', e, timeStamp)
+    timeStamp = Date.now()
+  },
     err => console.log(err),
     () => console.log('complete')
   )
-a$.next('b')
+
+a$.next('bbbbbb')
 a$.next('c')
-a$.next('d')
-// zip(d, to
+a$.next('z')
+a$.next('b')
+const arr = ['a', 'b', 'c', 'z']
 setTimeout(() => {
   console.log('aaa')
+  toggle$.next(true)
+  // arr.forEach( (e: any) => a$.next(e))
+  a$.next('aaaa')
   a$.next('b')
   a$.next('c')
-  a$.next('d')
-  a$.next('b')
-  a$.next('c')
-  a$.next('d')
-  a$.next('b')
-  a$.next('c')
-  a$.next('d')
-  a$.next('b')
-  a$.next('c')
-  a$.next('d')
-      //  toggle$.next(false)
+  // toggle$.next(false)
 }, 10000)
+
+setTimeout(() => {
+  console.log('vvv')
+  toggle$.next(true)
+  arr.forEach((e: any) => a$.next(e))
+  a$.next('vvv')
+  a$.next('b')
+  a$.next('c')
+  // toggle$.next(false)
+}, 20000)
 
 // const observable$ = from([1, 2, 3, 4, 5, 6, 7, 8, 9]).pipe(
 //   observeOn(asyncScheduler, 1000)
