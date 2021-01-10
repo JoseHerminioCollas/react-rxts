@@ -28,20 +28,20 @@ var timerEngine = function (listener) {
     };
     return { add: add };
 };
-/////////////////
-var tE = timerEngine(function (e) {
-    console.log('message:', e);
-});
-tE.add('a');
-tE.add('b');
-tE.add('c');
-tE.add('d');
-setTimeout(function () {
-    console.log('add');
-    tE.add('a');
-    tE.add('a');
-    tE.add('b');
-    tE.add('c');
-    tE.add('d');
-}, 10000);
-exports["default"] = h;
+// /////////////////
+// const tE = timerEngine((e: string) => {
+//     console.log('message:', e)
+// })
+// tE.add('a')
+// tE.add('b')
+// tE.add('c')
+// tE.add('d')
+// setTimeout(() => {
+//     console.log('add')
+//     tE.add('a')
+//     tE.add('a')
+//     tE.add('b')
+//     tE.add('c')
+//     tE.add('d')
+//     }, 10000)
+exports["default"] = timerEngine;
