@@ -1,8 +1,6 @@
 "use strict";
 exports.__esModule = true;
 var index_1 = require("./index");
-// console.log('test')
-// describe('timer engine', () => {
 var tE = index_1["default"](function (e) {
     console.log('message:', e);
 });
@@ -18,8 +16,11 @@ setTimeout(function () {
     tE.add('c');
     tE.add('d');
 }, 10000);
-// console.log('test')
-// it('should', () => {
-//     expect(0).toBe(0)
-// })
-// })
+setTimeout(function () {
+    console.log('add');
+    tE.add('xxxxxx');
+    tE.add('zzzzz');
+    tE.add('bbb');
+    tE.add('ccc');
+    tE.add('ddd');
+}, 20000);

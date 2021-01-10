@@ -15,3 +15,11 @@ setTimeout(() => {
     tE.add('c')
     tE.add('d')
 }, 10000)
+setTimeout(() => {
+    console.log('add')
+    tE.add('xxxxxx')
+    tE.add('zzzzz')
+    tE.add('bbb')
+    tE.add('ccc')
+    tE.add('ddd')
+}, 20000)
