@@ -1,6 +1,6 @@
-import timerEngine from './index'
+import timerEngine, { TimerEngineInstance } from './index'
 
-const tE = timerEngine((e: any) => {
+const tE: TimerEngineInstance = timerEngine((e: any) => {
     console.log('message:', e)
 })
 tE.add('a')

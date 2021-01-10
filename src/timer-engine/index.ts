@@ -1,8 +1,8 @@
 
 interface TimerEngine {
-    (listener: any): TimerEngineInstance
+    (listener: (message: string) => void): TimerEngineInstance
 }
-interface TimerEngineInstance {
+export interface TimerEngineInstance {
     add: (message: string) => void
 }
 const timerEngine: TimerEngine = (listener) => {
